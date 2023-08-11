@@ -15,12 +15,12 @@ class Movie:
 
 class Series(Movie):
     def __init__(self, title, release_year, genre, season, episode, views):
-        Movie.__init__(self, title, release_year, genre, views)
+        super().__init__(title, release_year, genre, views)
         self.season = season
         self.episode = episode
 
     def __str__(self):
-        return f"{self.title} S{self.season}E{self.episode}"
+        return f"{self.title} S{self.season:02d}E{self.episode:02d}"
 
 
 def add_item(item, media_list):
@@ -30,7 +30,7 @@ def add_item(item, media_list):
 def get_movies(media_list):
     movies = []
     for item in media_list:
-        if isinstance(item, Movie) and not isinstance(item, Series):
+        if type(item) is Movie:
             movies.append(item)
     movies = sorted(movies, key=lambda x: x.title)
     return movies
@@ -51,9 +51,10 @@ def search(title, media_list):
             return item
 
 
-def generate_views(title, media_list):
+def generate_views(media_list):
     views = random.randint(1, 100)
-    item = search(title, media_list)
+    list_nr = random.randint(0, len(media_list) - 1)
+    item = media_list[list_nr]
     item.views += views
 
 
@@ -62,14 +63,14 @@ def play(title, media_list):
     item.views += 1
 
 
-def generate_multiple_views(title, media_list):
-    for i in range(10):
-        generate_views(title, media_list)
+def generate_multiple_views(media_list):
+    for _ in range(10):
+        generate_views(media_list)
 
 
 def top_titles(num_titles, media_list, content_type=None):
-    if content_type == None:
-        items = sorted(media_list, key=lambda x: x.views, reverse=True)
+    if not content_type:
+        items = media_list
     else:
         if content_type == "movie":
             content = Movie
@@ -79,7 +80,7 @@ def top_titles(num_titles, media_list, content_type=None):
         for item in media_list:
             if isinstance(item, content):
                 items.append(item)
-        items = sorted(items, key=lambda x: x.views, reverse=True)
+    items = sorted(items, key=lambda x: x.views, reverse=True)
     return items[:num_titles]
 
 
@@ -91,9 +92,9 @@ def create_series(title, release_year, genre, season, episode, views):
     return Series(title, release_year, genre, season, episode, views)
 
 
-media_items = []
-
 if __name__ == "__main__":
+
+    media_items = []
 
     # Wyświetli na konsoli komunikat Biblioteka filmów.
     print("Biblioteka filmów")
@@ -109,8 +110,9 @@ if __name__ == "__main__":
     add_item(create_series("Narcos", 2015, "Thriller", 1, 3, 0), media_items)
 
     # Wygeneruje odtworzenia treści za pomocą funkcji generate_views.
-    for item in media_items:
-        generate_views(item.title, media_items)
+    # generate_views podniesie oglądalność tylko jednego serialu, wykorzystałem generate_multiple_views,
+    # która wykona generate_views 10 razy
+    generate_multiple_views(media_items)
 
     # Wyświetli na konsoli komunikat Najpopularniejsze filmy i seriale dnia <data>, gdzie <data> to bieżąca data w formacie DD.MM.RRRR.
     current_date = datetime.now().strftime("%d.%m.%Y")
