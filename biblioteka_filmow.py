@@ -42,37 +42,37 @@ class Series(Media, Info):
 media_items = []
 
 
-def add_item(item):
-    media_items.append(item)
+def add_item(item, media_list):
+    media_list.append(item)
 
 
-def get_movies():
+def get_movies(media_list):
     movies = []
-    for movie in media_items:
+    for movie in media_list:
         if isinstance(movie, Movie):
             movies.append(movie)
     movies = sorted(movies, key=lambda x: x.title)
     return movies
 
 
-def get_series():
+def get_series(media_list):
     series = []
-    for serie in media_items:
+    for serie in media_list:
         if isinstance(serie, Series):
             series.append(serie)
     series = sorted(series, key=lambda x: x.title)
     return series
 
 
-def search(title):
-    for item in media_items:
+def search(title, media_list):
+    for item in media_list:
         if title.lower() in item.title.lower():
             return item
 
 
-def generate_views(title):
+def generate_views(title, media_list):
     views = random.randint(1, 100)
-    item = search(title)
+    item = search(title, media_list)
     item.views += views
     return item
 
@@ -82,19 +82,19 @@ def play(title):
     item.views += 1
 
 
-def generate_multiple_views():
-    for item in range(10):
-        generate_views()
+def generate_multiple_views(title, media_list):
+    for _ in range(10):
+        generate_views(title, media_list)
 
 
-def top_titles(num_titles, content_type=None):
+def top_titles(num_titles, media_list, content_type=None):
 
     if content_type == "movie":
         content = Movie
     elif content_type == "series":
         content = Series
     items = []
-    for item in media_items:
+    for item in media_list:
         if isinstance(item, content):
             items.append(item)
     items = sorted(items, key=lambda x: x.views, reverse=True)
@@ -102,30 +102,35 @@ def top_titles(num_titles, content_type=None):
     return items
 
 
-movie1 = Movie("The Shawshank Redemption", 1994, "Drama", 0)
-movie2 = Movie("Pulp Fiction", 1994, "Crime", 0)
-series1 = Series("Stranger Things", 2016, "Science Fiction", 1, 1, 0)
-series2 = Series("Game of Thrones", 2011, "Fantasy", 3, 5, 0)
+def create_movie(title, release_year, genre, views):
+    return Movie(title, release_year, genre, views)
 
-add_item(movie1)
-add_item(movie2)
-add_item(series1)
-add_item(series2)
+
+def create_series(title, release_year, genre, season, episode, views):
+    return Series(title, release_year, genre, season, episode, views)
+
+
+add_item(create_movie("The Shawshank Redemption", 1994, "Drama", 0), media_items)
+add_item(create_movie("Pulp Fiction", 1994, "Crime", 0), media_items)
+add_item(
+    create_series("Stranger Things", 2016, "Science Fiction", 1, 1, 0), media_items
+)
+add_item(create_series("Game of Thrones", 2011, "Fantasy", 3, 5, 0), media_items)
 
 print("Wyświetl listę filmów")
-for movie in get_movies():
+for movie in get_movies(media_items):
     print(movie)
 
 print("Wyświetl listę seriali")
-for serie in get_series():
+for serie in get_series(media_items):
     print(serie)
 
 print("Znajdż tytuł")
-print(search("game of thrones"))
+print(search("game of thrones", media_items))
 
 print("Dodaj losową liczbę wyświetleń")
-generate_views("Stranger Things")
+generate_views("Stranger Things", media_items)
 
 print("Wyświetl top 1 serial")
-for series in top_titles(1, "series"):
+for series in top_titles(1, media_items, "series"):
     print(series)
