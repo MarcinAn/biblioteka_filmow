@@ -1,5 +1,6 @@
 import random
 
+
 class Media:
     def __init__(self, title, release_year):
         self.title = title
@@ -7,6 +8,7 @@ class Media:
 
     def __str__(self):
         return f"{self.title} ({self.release_year})"
+
 
 class Info:
     def __init__(self, genre, views):
@@ -39,43 +41,51 @@ class Series(Media, Info):
 
 media_items = []
 
+
 def add_item(item):
     media_items.append(item)
+
 
 def get_movies():
     movies = []
     for movie in media_items:
         if isinstance(movie, Movie):
             movies.append(movie)
-    movies= sorted(movies, key=lambda x: x.title)
+    movies = sorted(movies, key=lambda x: x.title)
     return movies
+
 
 def get_series():
     series = []
     for serie in media_items:
         if isinstance(serie, Series):
             series.append(serie)
-    series= sorted(series, key=lambda x: x.title)
+    series = sorted(series, key=lambda x: x.title)
     return series
+
 
 def search(title):
     for item in media_items:
         if title.lower() in item.title.lower():
             return item
 
+
 def generate_views(title):
     views = random.randint(1, 100)
     item = search(title)
     item.views += views
     return item
-    
+
+
 def play(title):
     item = search(title)
     item.views += 1
 
+
 def generate_multiple_views():
     for item in range(10):
         generate_views()
+
 
 def top_titles(num_titles, content_type=None):
 
@@ -87,9 +97,10 @@ def top_titles(num_titles, content_type=None):
     for item in media_items:
         if isinstance(item, content):
             items.append(item)
-    items= sorted(items, key=lambda x: x.views, reverse=True)
-    items= items[:num_titles]
+    items = sorted(items, key=lambda x: x.views, reverse=True)
+    items = items[:num_titles]
     return items
+
 
 movie1 = Movie("The Shawshank Redemption", 1994, "Drama", 0)
 movie2 = Movie("Pulp Fiction", 1994, "Crime", 0)
@@ -110,11 +121,11 @@ for serie in get_series():
     print(serie)
 
 print("Znajdż tytuł")
-print(search('game of thrones'))
+print(search("game of thrones"))
 
 print("Dodaj losową liczbę wyświetleń")
-generate_views('Stranger Things')
+generate_views("Stranger Things")
 
 print("Wyświetl top 1 serial")
-for series in top_titles(1, 'series'):
+for series in top_titles(1, "series"):
     print(series)
