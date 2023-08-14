@@ -39,7 +39,7 @@ def get_movies(media_list):
 def get_series(media_list):
     series = []
     for serie in media_list:
-        if isinstance(serie, Series):
+        if type(item) is Series:
             series.append(serie)
     series = sorted(series, key=lambda x: x.title)
     return series
@@ -73,13 +73,9 @@ def top_titles(num_titles, media_list, content_type=None):
         items = media_list
     else:
         if content_type == "movie":
-            content = Movie
+            items= get_movies(media_list)
         elif content_type == "series":
-            content = Series
-        items = []
-        for item in media_list:
-            if isinstance(item, content):
-                items.append(item)
+            items= get_series(media_list)
     items = sorted(items, key=lambda x: x.views, reverse=True)
     return items[:num_titles]
 
@@ -110,8 +106,6 @@ if __name__ == "__main__":
     add_item(create_series("Narcos", 2015, "Thriller", 1, 3, 0), media_items)
 
     # Wygeneruje odtworzenia treści za pomocą funkcji generate_views.
-    # generate_views podniesie oglądalność tylko jednego serialu, wykorzystałem generate_multiple_views,
-    # która wykona generate_views 10 razy
     generate_multiple_views(media_items)
 
     # Wyświetli na konsoli komunikat Najpopularniejsze filmy i seriale dnia <data>, gdzie <data> to bieżąca data w formacie DD.MM.RRRR.
