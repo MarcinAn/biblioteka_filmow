@@ -27,22 +27,21 @@ def add_item(item, media_list):
     media_list.append(item)
 
 
-def get_movies(media_list):
-    movies = []
+def get_media(media_list, content_type):
+    media = []
     for item in media_list:
-        if type(item) is Movie:
-            movies.append(item)
-    movies = sorted(movies, key=lambda x: x.title)
-    return movies
+        if type(item) is content_type:
+            media.append(item)
+    media = sorted(media, key=lambda x: x.title)
+    return media
+
+
+def get_movies(media_list):
+    return get_media(media_list, Movie)
 
 
 def get_series(media_list):
-    series = []
-    for serie in media_list:
-        if type(item) is Series:
-            series.append(serie)
-    series = sorted(series, key=lambda x: x.title)
-    return series
+    return get_media(media_list, Series)
 
 
 def search(title, media_list):
@@ -73,9 +72,9 @@ def top_titles(num_titles, media_list, content_type=None):
         items = media_list
     else:
         if content_type == "movie":
-            items= get_movies(media_list)
+            items = get_movies(media_list)
         elif content_type == "series":
-            items= get_series(media_list)
+            items = get_series(media_list)
     items = sorted(items, key=lambda x: x.views, reverse=True)
     return items[:num_titles]
 
